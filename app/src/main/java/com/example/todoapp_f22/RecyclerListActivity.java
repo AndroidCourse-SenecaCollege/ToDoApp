@@ -22,6 +22,7 @@ public class RecyclerListActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
 
+
        // getIntent().getExtras().getParcelableArrayList("todolist");
     }
 }

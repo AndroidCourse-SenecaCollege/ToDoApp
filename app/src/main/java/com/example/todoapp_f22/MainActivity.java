@@ -11,10 +11,12 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -23,13 +25,22 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
     ActivityResultLauncher<Intent> newToDOActivityResultLauncher;
     ListView baseAdapterList;
+    TodoAdapter adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        MyApp.setList(((MyApp)getApplication()).storageManager.readTasksFromFile(MainActivity.this));
         baseAdapterList = (ListView) findViewById(R.id.simpleListView);
-        TodoAdapter adapter = new TodoAdapter(this,MyApp.getList());
+        adapter = new TodoAdapter(this,MyApp.getList());
         baseAdapterList.setAdapter(adapter);
+
+        baseAdapterList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Log.d("TODO","Base Adapter Item Click Listener");
+            }
+        });
 
         newToDOActivityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
                 new ActivityResultCallback<ActivityResult>() {
@@ -41,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
                             Bundle bundle = data.getExtras();
                             ToDo newTodo = bundle.getParcelable("newTodo");
                             MyApp.addNewTodo(newTodo);
+                            ((MyApp)getApplication()).storageManager.writeNewTaskToFile(MainActivity.this,newTodo);
                             adapter.notifyDataSetChanged();
                         }
                     }
@@ -79,14 +91,14 @@ public class MainActivity extends AppCompatActivity {
 //                myIntent.putExtra("bundle",bundle);
                 startActivity(myIntent);
             }
-//            case R.id.reset:{
-//                storageManager.resetTheStorage(MainActivity.this);
-//                adapter.notifyDataSetChanged();
-//            }
-//            case R.id.cancel:{
-//
-//                break;
-//            }
+
+            case R.id.deleteAllTask:
+            {
+                ((MyApp)getApplication()).storageManager.deleteAllTasks(MainActivity.this);
+                MyApp.setList(new ArrayList<ToDo>(0));
+                adapter.toDos = MyApp.getList();
+                adapter.notifyDataSetChanged();
+            }
         }
         return true;
     }

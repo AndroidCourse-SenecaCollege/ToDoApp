@@ -43,6 +43,15 @@ public class TodoAdapter extends BaseAdapter {
 
             taskText.setText(toDos.get(i).task);
             dateText.setText(toDos.get(i).data);
+            if (toDos.get(i).isArgent == 1){
+                taskText.setTextColor(this.context.getResources().getColor(R.color.red,null));
+                dateText.setTextColor(this.context.getResources().getColor(R.color.red,null));
+
+            }else {
+                taskText.setTextColor(this.context.getResources().getColor(R.color.green,null));
+                dateText.setTextColor(this.context.getResources().getColor(R.color.green,null));
+
+            }
 
             return  view;
         }

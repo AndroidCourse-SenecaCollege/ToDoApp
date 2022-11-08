@@ -1,10 +1,12 @@
 package com.example.todoapp_f22;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -35,6 +37,16 @@ public class ToDoRecyclerAdapter extends RecyclerView.Adapter<ToDoRecyclerAdapte
         holder.task.setText(list.get(position).task);
         holder.date.setText(list.get(position).data);
 
+        if (list.get(position).isArgent == 1){
+            holder.task.setTextColor(this.mContex.getResources().getColor(R.color.red,null));
+            holder.date.setTextColor(this.mContex.getResources().getColor(R.color.red,null));
+
+        }else {
+            holder.task.setTextColor(this.mContex.getResources().getColor(R.color.green,null));
+            holder.date.setTextColor(this.mContex.getResources().getColor(R.color.green,null));
+
+        }
+
     }
 
     @Override
@@ -51,6 +63,12 @@ public class ToDoRecyclerAdapter extends RecyclerView.Adapter<ToDoRecyclerAdapte
             task = itemView.findViewById(R.id.task);
             date = itemView.findViewById(R.id.task_date);
 
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Log.d("TODO", "Recycler Adapter Item Click Listener");
+                }
+            });
         }
     }
 }
